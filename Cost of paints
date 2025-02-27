@@ -1,0 +1,106 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+int main(){
+	int houses;
+	int doors;
+	float d_width,d_height;
+	float costpergallon;
+	float dailyrate;
+	
+	
+	cout<<"Enter the number of houses in the communinty:";
+	cin>>houses;
+	cout<<"Enter the number of doors per house:";
+	cin>>doors;
+	cout<<"Enter the width and heigth of each door(in feet):";
+	cin>>d_width>>d_height;
+	cout<<"Enter the cost of paint per gallon: $";
+	cin>>costpergallon;
+	cout<<"Enter the contractor's daily rate: $";
+	cin>>dailyrate;
+	cout<<endl;
+	
+	//input dimensions of each house 
+	int i;
+	double totalarea;
+	float width,height,length,wallarea,doorarea;
+	double c_area=0.0, c_areaAllowance=0.0,c_paintcans=0.0,c_cost=0.0;
+	int c_days=0.0;
+	double c_fee=0.0,c_total=0.0;
+	
+	
+	for (i=1;i<=houses;i++){
+		cout<<"---House "<<i<<"---"<<endl;
+		cout<<"Enter the width,length and height of the house (in feet): ";
+		cin>>width;
+		cin>>length;
+		cin>>height;
+		cout<<endl;
+		cout<<"---House "<<i<<" Cost Summary---"<<endl;
+	
+	//total area to be painted
+		wallarea=(width*height+length*height)*2;
+		doorarea=doors*d_width*d_height;
+		totalarea=wallarea-doorarea;
+		
+        c_area=c_area+ totalarea;   //update 
+		
+	//total area to be painted + 15% allowance 
+	float extraAllowance= 1.15;
+	double totalarea_Allowance;
+	totalarea_Allowance= totalarea *extraAllowance;
+	
+	c_areaAllowance=c_areaAllowance+totalarea_Allowance; //update 
+	
+	//Paint cans to be purchased
+	int pergallon=350; //coverge per gallon
+	int cans_purchased;
+	cans_purchased= ceil(totalarea_Allowance/ pergallon);
+	
+	c_paintcans=c_paintcans+cans_purchased; //update
+	
+	
+	//paint cost
+	float paintCost =cans_purchased*costpergallon;
+	c_cost=c_cost+paintCost; //update
+	
+	
+	
+	//Contractor's days required and fee 
+	int con_paint=1000;  //how much a contractor can paint per day
+	int days=ceil(totalarea_Allowance/con_paint);
+	double fee=days*dailyrate;
+	
+	c_days=c_days+days; //update
+	c_fee=c_fee+fee;  //update
+		
+	//total cost per house 
+	double total=paintCost+fee;	
+	c_total=c_total+total;  //update
+		
+		
+		//display summary 
+		cout<<"Total area to be painted(excluding 15% allowance): "<<totalarea<<" square feet"<<endl;
+		cout<<"Total area to be painted (icluding 15% allowance):  "<<totalarea_Allowance<<" square feet"<<endl;
+		cout<<"Number of paint cans to be purchased: "<<cans_purchased<<endl;
+		cout<<"Total cost of paint:$"<<paintCost<<endl;
+		cout<<"Number of days the contractor will take: "<<days<<endl;
+		cout<<"Contractor's fee:$"<<fee<<endl;
+		cout<<"Total cost for this house:$"<<total<<endl;
+		cout<<endl;
+	}
+	
+	//total community summary
+	cout<<"---Total Community Painting Cost Summary---"<<endl;
+	cout<<"Area to be painted (excluding 15% allowance): "<<c_area<<" square feet"<<endl;
+	cout<<"Area to be painted (includeing 15% allowance):"<<c_areaAllowance<<" square feet"<<endl;
+	cout<<"Number of paint cans to be purchased: "<<c_paintcans<<endl;
+	cout<<"Cost of paint:$"<<c_cost<<endl;
+	cout<<"Number of days the contractor will take: "<<c_days<<endl;
+	cout<<"Contractor's fee:$"<<c_fee<<endl;
+	cout<<"Cost to paint the entire housing community:$" <<c_total<<endl;	
+
+	return 0;
+	
+}
