@@ -1,0 +1,213 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>  
+
+using namespace std;
+
+int main() {
+    ifstream inputFile;
+    ofstream outputFile;
+    string studentID, firstName, lastName;
+    int yearStarted, level_one, level_two, level_three;
+    int foundation_credits, totalCredits;
+    double qualityPoints;
+    string degree_Programme;
+    double gpa;
+    string degree;
+    string award ="";
+	float highestGPA;
+	int student_notgrad;
+	int student_process;
+	int student_firstclass;
+	string turningAwardID , turningAwardfname,turningAwardlname;
+	
+	string canGraduate;
+	student_process = 0;
+	student_notgrad=0;
+	student_firstclass=0;
+	highestGPA =0;
+	
+	bool meetfclass = false;
+	bool gpaRequirement =true;
+	bool creditRequirement= true;
+	
+	
+    inputFile.open("Students.txt");									    // Open the input file for reading
+
+    if (!inputFile.is_open()) {
+        cout << "Error in opening Students.txt" << endl;
+        exit(1);
+    }
+    
+    outputFile.open("Students-CS.txt");									// Open the output file to store filtered data
+
+    if (!outputFile.is_open()) {
+        cout << "Error in opening Student-CS.txt" << endl;
+        exit(1);
+    }
+	
+    									// FILTER STUDENTS AND OUTPUT RELEVANT DATA TO STUDENTS-CS.TXT
+    
+    while (inputFile >> studentID >> firstName >> lastName >> degree_Programme >> yearStarted >> level_one >> level_two >> level_three >> foundation_credits >> qualityPoints) {
+        if (degree_Programme == "BSc_Computer_Science" || degree_Programme == "BSc_Computer_Science_Special") {
+            outputFile << studentID <<"  "<< firstName<<"\t"<<" "<< lastName<<"\t  "<<"     "<< degree_Programme <<" \t"<<" "<< level_one<<" \t" <<" "<< level_two <<" \t"<<" "<< level_three<<" \t" <<"  "<< foundation_credits <<" \t"<<" "<< qualityPoints << endl;
+        }
+    }
+	outputFile << "END";
+    inputFile.close();
+    outputFile.close();
+
+    inputFile.open("Students-CS.txt");									// Open Student-CS.txt for reading
+
+    if (!inputFile.is_open()) {
+        cout << "Error in opening Student-CS.txt" << endl;
+        exit(1);
+    }
+	
+	outputFile.open("students-CS-Summary.txt");							//Open the output file to store filtered data
+
+    if (!outputFile.is_open()) {
+        cout << "Error in opening Student-CS.txt" << endl;
+        exit(1);
+    }
+    
+    
+    
+    // DETERMINE THE GRADUATING STATUS OF EACH STUDENT IN THE FILE
+    
+    inputFile >>studentID;
+    while (studentID !="END"){
+    	inputFile>>firstName;
+    	inputFile>>lastName;
+    	inputFile>>degree_Programme;
+    	inputFile>>level_one;
+    	inputFile>>level_two;
+    	inputFile>>level_three;
+    	inputFile >> foundation_credits;
+    	inputFile>>qualityPoints;
+    	
+			outputFile << "---------------------------------------------------------------------------------------------------"<<endl;
+			outputFile<<endl;
+			outputFile << "Student ID:\t\t" <<studentID<<endl;
+		    outputFile << "Student Name:\t\t" <<lastName<< ","<<firstName<<endl;
+		    outputFile << "Degree Programme:\t" <<degree_Programme<<endl;
+		   	
+		   	
+		    
+		  						 //calculations to determine GPA
+		   
+		    if ( level_two + level_three == 0) {
+		        	gpa = 0.0;
+	        }
+	        else if (gpa = qualityPoints / (level_two + level_three)){
+	        outputFile<<fixed<<setprecision(2);
+	        	if (gpa>highestGPA){
+			highestGPA = gpa;	      
+	   		turningAwardID = studentID;
+			turningAwardfname= firstName;
+			turningAwardlname=lastName;
+	        	
+			}
+	    }
+	        outputFile<< fixed<<setprecision(2);
+		    outputFile << "Degree GPA:\t\t" <<gpa<<endl;
+		    outputFile << "Can Graduate:\t\t" ;
+		    totalCredits = level_one + level_two + level_three + foundation_credits;
+		   
+	  
+	
+      						  //Requirements  to graduate (GPA)
+
+        if (totalCredits >= 93 && level_one >= 24 && level_two + level_three >= 60 && foundation_credits >= 9) {
+            if (gpa < 2.0) {
+                outputFile << "No. Meets requirements but GPA is lass than 2.0." << endl;
+						gpaRequirement =false;
+            }
+            else {
+                outputFile << "Yes, ";
+                if (gpa >= 2.0 && gpa < 2.5) {
+                    outputFile << "Class of Honors: Pass.";
+                }
+                else if (gpa >= 2.5 && gpa < 3.0) {
+                    outputFile << "Class of Honors: Lower Second Class Honors.";
+                }
+                else if (gpa >= 3.0 && gpa < 3.6) {
+                    outputFile << "Class of Honors: Upper Second Class Honors.";
+                }
+                else {
+                    outputFile << "with First Class Honors.";
+                     	meetfclass = true;
+                }
+                outputFile << " " << endl;
+            }
+        }
+     					  
+						    //Requirements to graduate (Credits)
+		else {
+            outputFile << "No Needs: ";
+            creditRequirement = false;
+         
+            if (level_one < 24) {
+                outputFile  << 24 - level_one << " level 1 credits. ";
+            }
+            if (level_two + level_three < 60) {
+                outputFile  << 60 - (level_two + level_three) << " Level 2/3 credits.";
+            }
+            if (foundation_credits < 9) {
+                outputFile  << 9 - foundation_credits << " foundation credits.";
+            }
+            outputFile << "" << endl;
+            
+        }
+        
+        if(gpaRequirement ==false || creditRequirement== false)						//calculation to determine the graduating students
+        	student_notgrad = student_notgrad+1;
+        	
+        if(meetfclass==true && creditRequirement ==true)
+        	student_firstclass = student_firstclass +1;								//calculation to determine students graduating with First Class Honours
+	
+		
+        
+	  		 student_process=student_process+ 1;                                    //calculation of students processed
+
+	
+		   	outputFile<<endl; 
+			outputFile << "---------------------------------------------------------------------------------------------------"<<endl;
+			outputFile<<endl;
+	
+	    	inputFile >> studentID;
+	    	
+	    	gpaRequirement =true;
+	    	creditRequirement = true;
+	    	meetfclass = false;		
+
+	}
+
+	inputFile.close();
+																										
+
+		    outputFile<< " Number of students processed:\t\t\t\t "<<student_process<<endl;
+		    outputFile<< " Number of graduating students:\t\t\t\t "<<student_process-student_notgrad<<endl;
+			outputFile<< " Number of students graduating with First Class Honours: "<<student_firstclass<<endl;
+			outputFile << endl;
+	
+	
+	
+	
+    		outputFile << "Student who gets the Turning Award for Excellence in Computer Science: "<<endl;
+
+		 	outputFile<< fixed<<setprecision(2);
+
+    		outputFile <<"   First Name: " <<turningAwardfname<<endl;
+    		outputFile <<"   Last Name:  " <<turningAwardlname<<endl;
+    		outputFile <<"   GPA:        " <<highestGPA;
+    		outputFile<<endl;
+
+
+	inputFile.close();
+	outputFile.close();
+	
+    return 0;
+
+}
+
