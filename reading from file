@@ -1,0 +1,307 @@
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+	//Functions:
+
+
+//function isPrime-    
+int i;
+bool isPrime(int n){
+	if(n<=1){
+		return false;
+	}
+	
+	for(i=2;i<=sqrt(n);i=i+1){
+		if(n%i==0){
+			return false;
+		}
+	}
+			return true;
+	}
+
+//function product2Primes-
+int product2Primes (int n){
+
+	int i;
+	for(i=2;i<=n/2;i=i+1){
+		if(i*(n/i)==n){                               
+		if(isPrime (i) && isPrime(n/i)){
+				return i;
+			}
+		}
+	}
+				return -1;
+	}
+
+//function isAlmostSquare-
+int isAlmostSquare(int n){
+	int x=  sqrt(n);
+	if(x* (x +1 )==n) {
+		return x;
+	}
+		return -1;
+	}
+
+//function sumDigits-
+int sumDigits (int n){
+	  int sum = 0;
+    while (n > 0) {
+        sum =sum+ n % 10;
+        n =n/ 10;
+    }
+    	return sum;
+	}
+
+
+//function isBinary-
+bool isBinary (int n){
+    while (n != 0) {
+        int binary = n % 10;
+        if (binary != 0 && binary != 1) {
+        return false;
+      }
+        n = n/10;
+	}
+    	return true;
+	}
+
+//function isPathak-
+bool isPathak (int n){
+	if(n % sumDigits(n)==0) {
+    	return true;
+	}
+		return false;
+	}
+
+
+//function isSlightlyWavy-
+bool isSlightlyWavy (int n){
+int dig1,dig2;
+
+	while(n!=0){
+		dig1=n%10;
+		dig2=(n/10)%10;
+	
+	if(!(dig1-dig2==1||dig2-dig1==1)){
+		return false;
+	}
+	n=(n/10)/10;
+	}
+		return true;
+	}
+	
+//function triangular-
+int triangular (int n){
+	 int sum = 0;
+    int i = 0;
+    while (sum < n) {
+        i=i+1;
+        sum =sum +i ;
+    }
+    if (sum == n) {
+        return i;
+    }
+   		 return -1;
+	}
+
+
+
+
+
+int main(){
+	
+	ifstream inputfile;
+	
+	
+	//Open the input file for reading
+	
+	inputfile.open("C:\\Users\\alikh\\Downloads\\DataFile (1)\\InputData.txt");
+	
+	if(!inputfile.is_open()){
+		cout<<"Input file could not be opened...Aborting"<<endl;
+		exit(1);
+	}
+	
+		 
+	//Read the data for each user from the file,
+	string username,country;
+	int fav_num;
+	int maximum =1000;
+ 
+	int num[maximum]= {0};
+	//store the favourite number of that user in an array. 
+	int users =0;
+	
+	 while (inputfile>>username>>country>>fav_num){;			//favourite number of users from Trinidad and Tobago 
+	 	if (country =="tt"){
+	 		 num[users]=fav_num;
+	 		 users=users+1;
+	 		 
+	 if (username=="END");		 
+		 }
+	}
+	 
+	
+	 
+	 int min, max;
+	 double sum;
+	 int i;
+	 double average;
+	 
+	 min = num [0];
+	 max = num [0];
+	 sum = num[0];
+	 
+	 for( i =1;i<users;i=i+1){
+	 	if (num[i]<min){
+	 		min=num[i];				//The smallest of the favourite numbers of users from Trinidad and Tobago
+		 }
+		 
+		if(num[i]>max){
+			max =num[i];			//The biggest of the favourite numbers of the users from Trinidad and Tobago
+		}
+		
+		sum =sum +num[i];
+	}
+	 cout<<fixed<<setprecision(2);
+		
+		average = sum / users;			//The average of the favourite numbers of the users from Trinidad and Tobago 
+
+
+	cout<<"There are "<<users<<" numbers for users from Trinidad and Tobago in the file."<<endl;
+	cout<<"The smallest number is: "<<min<<endl;
+	cout<<"The biggest number is: "<<max<<endl;
+	cout<<"The Average of the numbers is: "<<average<<endl;
+	cout<<endl;
+
+	
+	
+	//Find and display all the almost-square numbers stored in the array.
+	int numelements;
+	
+	cout<<"The following are the almost-square numbers: "<<endl;
+	
+	for(i=0;i<users;i=i+1){
+		numelements = isAlmostSquare(num[i]);
+		if(numelements !=-1){
+			cout<<num[i]<<":"<<numelements<<" x "<<numelements+1<<endl;
+		} 
+	}
+	cout<<endl;
+	
+	
+	
+	
+	//Find and display all the Pathak numbers stored in the array.
+	int divisors;
+	cout<<"The following are the Pathak numbers:"<<endl;
+	
+	for(i=0;i<users;i=i+1){
+		if(isPathak(num[i])){
+			divisors=sumDigits(num[i]);
+			if(divisors !=0){
+			cout<<num [i]<<": "<<divisors<<" x "<<num[i]/divisors;
+			}
+			cout<<endl;
+		}
+	}
+		cout<<endl;
+	
+	
+	
+	//Find and display all the binary numbers stored in the array.
+	cout<<"The following are the binary numbers:"<<endl;
+	for(i =0;i<users; i=i+1){
+		if(isBinary (num[i])){
+			cout<<""<<num[i]<<endl;
+		}
+	}
+		cout<<endl;
+	
+	
+	
+	
+	//Find and display all the slightly-wavy numbers stored in the array.
+
+	cout<<"The following are the slighly-wavy numbers: " <<endl;
+	for(i=0;i<users;i=i+1){
+		if(isSlightlyWavy (num[i])){
+			cout<<num[i]<<endl;
+		}
+	}
+		cout<<endl;
+
+
+	 
+
+            
+	//Find and display all the numbers in the array which can be expressed as a product of two prime numbers. 
+ 	cout<<"The following are the numbers which are the product of two prime numbers: "<<endl;
+ 	for(i=0;i<users;i=i+1){
+ 		numelements= product2Primes(num[i]);
+ 	if(numelements != -1){
+ 	cout<<num[i]<<": "<<numelements<<" x "<<num[i]/numelements<<endl;
+		 }
+	}
+ 		cout<<endl;
+ 	
+ 	
+ 	
+ 	
+	 // Find and display all the Pathak numbers in the array which are also slightly-wavy.
+	 int pSWnum_max = INT_MIN;
+	 int pSWnum_min= INT_MAX;
+
+	 
+	cout<<"The Following Pathak numbers are also slightly-wavy: "<<endl;
+	for(i=0;i<users;i=i+1){
+		if(isPathak(num[i])&& isSlightlyWavy(num[i])){
+			
+			cout<<num[i]<<" "<<endl;
+			
+			if(num[i]<pSWnum_min){
+				pSWnum_min=num[i];			//smallest 
+			}
+			if(num[i]>pSWnum_max){
+				pSWnum_max=num[i];			//biggest
+			}
+		}
+	}
+ 	cout<<endl;
+ 	cout<<"  --> The biggest one is : "<<pSWnum_max<<endl;
+ 	cout<<"  --> The smallest one is : "<<pSWnum_min<<endl;
+ 	cout<<endl;
+ 
+ 
+ 
+ 
+ 	//Find and display all the triangular numbers in the array.
+ 	cout<<"The following are the triangular numbers: "<<endl;
+ 	
+ 	int tri_num;
+ 	
+ 	
+ 	for(i=0;i<users;i=i+1){
+ 		 numelements = triangular(num[i]);
+ 		 if (numelements !=-1){
+ 		 	cout<<num[i]<<":";
+ 		 	for(tri_num =1;tri_num<=numelements-1;tri_num=tri_num+1){
+ 		 
+ 		 		cout<<tri_num<<"+";
+ 		 	}
+ 		 	    cout<<tri_num;
+			  	cout<<endl;
+		  }
+	}
+	
+	cout<<endl;
+ 	cout<<"END OF PROGRAM"<<endl;
+
+	 inputfile.close();
+	 return 0;
+
+	}	
