@@ -1,0 +1,179 @@
+
+#include <iostream>
+#include <cstdlib>
+#include <fstream>
+using namespace std;
+
+struct stu_rec {
+    int ID;
+    int n;
+    int arr[5];
+};
+
+char* getGrade(int* mark) {
+    char* grade = new char;
+
+    if (*mark >= 80 && *mark <= 100) {
+        *grade = 'A';
+    }
+    else if (*mark >= 70 && *mark <= 79) {
+        *grade = 'B';
+    }
+    else if (*mark >= 60 && *mark <= 69) {
+        *grade = 'C';
+    }
+    else if (*mark >= 50 && *mark <= 59) {
+        *grade = 'D';
+    }
+    else
+        *grade = 'F';
+
+    return grade;
+
+}
+
+void ProcessData(stu_rec* STU_ARR[]) {
+    cout << "Grade scheme: A (80-100), B (70-79), C (60-69), D (50-59), F (< 50)" << endl;
+    cout<<endl;
+
+
+    // Number of candidates--taken from 1st element in array
+    int* numcandidates=(int*)malloc(sizeof(int));
+    *numcandidates =0;
+    *numcandidates = STU_ARR[0]->n;
+
+    // Maximum number of subjects taken by any candidate
+    int* maxsubs=(int*)malloc(sizeof(int));
+    *maxsubs=0;
+    
+     // Average mark for each candidate
+    double* average=(double*)malloc(sizeof(double));
+     *average=0.0;
+     
+     
+    // highest average
+    double* maxaverage=(double*)malloc(sizeof(double));
+    *maxaverage = 0.0;
+    
+    int* maxID=(int*)malloc(sizeof(int));
+    *maxID=0;
+    
+
+  for (int i = 1; i <= *numcandidates; i=i+1) {
+	while (STU_ARR[i]->ID != 0) {
+
+
+	double* sum=(double*)malloc(sizeof(double));
+    *sum = 0.0;
+        for (int x = 0; x <STU_ARR[i]->n; x=x+1) {
+            *sum = *sum + STU_ARR[i]->arr[x];
+        }
+
+    *average = *sum / STU_ARR[i]->n;
+
+        // Display data
+    cout << "ID=" << STU_ARR[i]->ID << endl;
+    cout<<endl;
+        
+    for (int x = 0; x < STU_ARR[i]->n; x=x+1) {
+            cout << "Score=" << STU_ARR[i]->arr[x] << " 	Grade=" << getGrade(&STU_ARR[i]->arr[x]) << endl;
+        }
+        
+    if (STU_ARR[i]->n >*maxsubs) {							
+       *maxsubs = STU_ARR[i]->n;
+        }
+
+    cout << "Average for cad " << STU_ARR[i]->ID << " is " << *average << endl;
+	cout << "------------------------------------------------"<<endl;
+       
+	if (*average > *maxaverage) {
+            *maxaverage = *average;
+            *maxID = STU_ARR[i]->ID;
+        }
+    
+    i=i+1;							//increment
+	}
+}															
+	cout << endl;
+	cout << "---------SUMMARY RESULTS------------------------" << endl;
+    cout << "No. of candidates = " << *numcandidates - 1 << endl;
+    cout << "Maximum number of subjects taken = " << *maxsubs << endl;		
+    cout << "Highest average = " << *maxaverage << " obtained by " << *maxID << endl;
+    cout << "------------------------------------------------" << endl;
+
+}
+
+int main() {
+    ifstream in;
+    int* maxsubs =0;
+    double* average= 0;
+    double* maxaverage=0;
+    int* maxID=0;
+    int* sum=0;
+   	
+
+    in.open("students.txt"); 											// open file
+    if (!in.is_open()) {
+        cout << "File can not be opened...ABORTING" << endl;
+        exit(1);
+    }
+
+    stu_rec** STU_ARR = (stu_rec**)malloc(101* sizeof(stu_rec*));					// store array of pointers
+    
+    
+    int* studentRecords=(int*)malloc(sizeof(int));
+    *studentRecords = 1; 												// number of student records
+
+while (true) {
+	
+    // Allocate memory for each student record
+	STU_ARR[*studentRecords]=(stu_rec*)malloc(sizeof(stu_rec));
+    
+	
+    in >> STU_ARR[*studentRecords]->ID;
+    
+    //Check for termination
+    if (STU_ARR[*studentRecords]->ID == 0)
+       break;
+   
+
+    // Read the number of courses taken
+    in >> STU_ARR[*studentRecords]->n;
+
+    // Read scores for each course
+    for (int i = 0; i < STU_ARR[*studentRecords]->n; i=i+1) {
+        in >> STU_ARR[*studentRecords]->arr[i];
+    }
+
+    *studentRecords= *studentRecords+1;
+}
+
+  	 in.close();
+    
+
+    // Allocate memory for the 0th element
+    STU_ARR[0] = (stu_rec*)malloc(sizeof(stu_rec));                         
+    STU_ARR[0]->n = *studentRecords;
+
+ 
+	 ProcessData(STU_ARR);
+	      
+	
+
+    // Free memory;
+    
+    free (maxsubs);
+    free (average);
+    free (maxaverage);
+    free (maxID);
+    free (sum);
+    
+ for (int i = 0; i <= *studentRecords; i=i+1)  
+    // Free the array of pointers
+  free (STU_ARR[i]);
+
+free(STU_ARR);
+
+
+    return 0;
+}
