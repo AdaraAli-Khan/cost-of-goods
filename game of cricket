@@ -1,0 +1,235 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+void drawStars (int n) {
+	int count;
+	
+	for (count=1; count<=n; count=count+1) {
+		cout << "*";
+	}
+	
+}
+
+int main () {
+    ifstream inputfile;
+    ofstream out;
+ 	string userName;
+	bool found=false;
+	int playercount=0;
+
+	//request user to specify name fo team
+		cout<<"Which team do you want to get battting statistics for?";
+		cin>>userName;
+		cout<<endl;
+			
+	
+	//open inputfile 
+	inputfile.open("t20_world_cup_2024_batting_stats.txt");
+		if(!inputfile.is_open()){
+			cout<<"Error opening input file.Aborting...";
+			exit(1);
+		}
+		
+		
+	//open outputfile
+		out.open("country_batting_stats.txt");
+		if(!out.is_open()){
+			cout<<"Error opening output file.Aborting...";
+			exit (1);
+		}
+		
+		string teamName,playerName;
+		int matches,innings,notouts,runs;
+		double hundreds,fifties,highestScore;
+		double strikeRate;
+		
+	//read the data for each player
+		inputfile>>playerName;
+		
+	while(playerName!="END"){
+		inputfile>>teamName;
+		inputfile>>matches;
+		inputfile>>innings;
+		inputfile>>notouts;
+		inputfile>>runs;
+		inputfile>>highestScore;
+		inputfile>>strikeRate;
+		inputfile>>hundreds;
+		inputfile>>fifties;
+		
+
+	if(teamName==userName){
+		found=true;
+		out<<playerName<<" ";
+		out<<matches<<" ";
+		out<<innings<<" ";
+		out<<notouts<<" ";
+		out<<runs<<" ";
+		out<<highestScore<<" ";
+		out<<strikeRate<<" ";
+		out<<hundreds<<" ";
+		out<<fifties<<" ";
+		out<<endl;
+	}
+		inputfile>>playerName;
+		playercount++;	
+}
+
+	//if no players are found
+	if(!found){
+	cout << "No players found for the team " << userName << ". Aborting...";
+        return 1; 
+}
+
+		
+		cout<<"--> About to get batting statistics for "<<userName<<"."<<endl;
+		cout<<"--> Batting statistics read for "<<playercount<<" players"<<endl;
+		cout<<endl;
+		out<<"END";
+		inputfile.close();
+		out.close();
+		
+	int count=0;
+	int totalhundreds=0;
+	int totalfifties=0;
+	int maxruns =0;
+	float sndmaxruns=-1;
+	string maxplayer=" ";
+	string sndmaxplayer=" ";
+	int score=0;
+	int maxscore=-1;
+	string maxplayerscore;
+	int minruns=1000000;
+	string minplayerscore;
+	double maxavg=0.0;
+	double avg=0.0;
+	string playeravg;
+	string playername;
+	double	scored; 
+	
+		//open file to read
+	inputfile.open("country_batting_stats.txt");
+	if(!inputfile.is_open()){
+	cout<<"file cannot be opened...";
+	exit(1);
+}
+	cout<<"Histogram of batting statistics for  "<<userName<<"."<<endl;
+	
+	inputfile>>playerName;
+	
+	while(playerName !="END"){
+		inputfile>>matches;
+   		inputfile>>innings;
+		inputfile>>notouts;
+		inputfile>>runs;
+		inputfile>>highestScore;
+		inputfile>>strikeRate;
+		inputfile>>hundreds;
+		inputfile>>fifties;
+
+
+		double astericks;
+		astericks=ceil(runs/10.0);
+		cout<<"        "<<setw(20)<<left<<playerName<<": |";
+		drawStars(astericks);
+		cout<<endl;
+
+
+//highest and second higest number of runs
+	if (runs>maxruns){
+		sndmaxruns=maxruns;
+		sndmaxplayer=maxplayer;
+		
+		maxruns=runs;
+		maxplayer=playerName;
+		}
+	else if (runs>sndmaxruns){
+		sndmaxruns=runs;
+		sndmaxplayer=playerName;
+		}
+		
+		//highest indivdual score		
+		if(maxscore<0){
+			maxscore=-maxscore;
+		
+		}
+		if (highestScore > maxscore) {
+            maxscore = highestScore;
+            maxplayerscore = playerName;
+        }
+		
+		
+		//smallest total number of  runs
+		if(runs<minruns){
+			minruns=runs;
+			minplayerscore=playerName;
+		}
+		
+		//average
+		scored=innings-notouts;
+	
+	   if (scored==0){
+		       avg=0.0;
+		 }else{
+		 	avg=runs/scored;
+	}
+	    if (avg>maxavg){
+	    	maxavg=avg;
+	    	playeravg=playerName;
+		
+}
+
+	// total number of fifties and hundreds
+	 totalfifties=totalfifties+fifties;
+     totalhundreds=totalhundreds+hundreds;	
+     
+
+	inputfile>>playerName;
+	count++;
+}
+
+	cout<<endl;
+    cout<<"Number of players in the team: "<<count<<endl;
+    cout<<endl;
+
+	cout<<"The highest number of runs in the tournament was "<<maxruns<<" by "<<maxplayer<<endl;
+	cout<<"It was "<<319-maxruns<<" runs away from 319 scored by v_Kohli for India "<<endl;
+	cout<<"in the 2013/2014 World Cup."<<endl;
+	cout<<endl;
+	
+	
+	cout<<"The second highest number of runs in the tournament was "<<sndmaxruns<<endl;
+	cout<<"It was scored by "<<sndmaxplayer<<endl;
+	cout<<endl;
+
+	cout<<"The higest individual score for "<<userName<<" was "<<maxscore<<" by "<<maxplayerscore<<endl;
+	cout<<"It was "<<123-maxscore<<" runs away form 123 scored by BB_Mcallum for New Zealand "<<endl;
+	cout<<"against Bangladesh in the 2012 World Cup."<<endl;
+	cout<<endl;
+		
+	
+	cout<<"The lowest total number of runs in the tournamnet was "<<minruns<<endl;
+	cout<<"It was scored by "<<minplayerscore<<endl;	
+	cout<<endl;
+	
+	
+	cout<<"The highest batting average was "<<maxavg<<" by "<<playeravg<<endl;
+	cout<<endl;
+		
+		
+	cout<<"Total number of fifties: "<<totalfifties<<endl;
+	cout<<"Total number of hundreds: "<<totalhundreds<<endl;
+	cout<<endl;
+	
+	cout<<"---End of Program"<<endl;	
+		
+		
+	inputfile.close();	
+		
+		return 0;
+	}
+		
