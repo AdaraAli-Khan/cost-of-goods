@@ -1,0 +1,509 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <cmath>
+
+using namespace std;
+
+// this function draws n asterisks on the monitor without going to a new line
+
+void drawStars (int n) {
+	int count;
+	
+	for (count=1; count<=n; count=count+1) {
+		cout << "*";
+	}
+	
+}
+
+
+
+// Part 1: this function returns the month of a draw, given an index of the draws array
+
+string getMonth (int index) {
+	
+	string month = "";
+	
+	if(index>=1028 && index<=1072){
+		month="November";
+	}else
+		if (index>=924 && index <=1027){
+			month="October";
+		}else
+			if (index>=824 && index <=923){
+			month="September"; 
+	}else
+		if (index>=716 && index <=823){
+			month="August";
+	}else
+			if (index>=608 && index <=715){
+			month="July";
+	}else
+			if (index>=508 && index <=607){
+			month="June";
+	}else
+			if (index>=404 && index <=507){
+			month="May";
+	}else
+			if (index>=304 && index <=403){
+			month="April";
+	}else
+			if (index>=208 && index <=303){
+			month="March";
+	}else
+			if (index>=108 && index <=207){
+			month="February";
+	}else{
+			month="January";
+	}
+	
+	return month;
+}
+
+
+
+// Part 2: this function returns the name of a month corresponding 
+//  to the integers [1..11]
+
+string getMonthName (int monthNum) {
+	
+	string month = "";
+	
+	if(monthNum==1){
+		month="January";
+	}else
+	if(monthNum==2){
+		month="February";
+	}else
+	if(monthNum==3){
+		month="March";
+	}else
+	if(monthNum==4){
+		month="April";
+	}else
+	if(monthNum==5){
+		month="May";
+	}else
+	if(monthNum==6){
+		month="June";
+	}else
+	if(monthNum==7){
+		month="July";
+	}else
+	if(monthNum==8){
+		month="August";
+	}else
+	if(monthNum==9){
+		month="September";
+	}else
+	if(monthNum==10){
+		month="October";
+	}else{
+	
+		month="November";
+}
+	
+	return month;
+}
+
+
+
+// Part 3: this function returns the starting index in the draws array fo
+//  for a given month in the range 1..11]
+
+int getStartMonth (int month) {
+	
+	int startIndex = -1;
+	
+	int startingIndex[]={0,108,208,304,404,508,608,716,824,924,1028};
+	
+	for(int i =1;i<=11;i++){
+		if(month==i){
+			startIndex=startingIndex[i-1];
+		}
+	}
+	return startIndex;
+}
+
+
+// Part 4: this function returns a string corresponding to one
+// of the four draws each day
+
+string getDrawTime (int n) {
+	
+	string drawTime = "";
+	
+	if(n==1){
+		drawTime="Morning";
+	}else
+	if (n==2){
+		drawTime="Midday";
+	}else
+	if(n==3){
+		drawTime="Afternoon";
+	}else
+	drawTime="Evening";
+	
+	return drawTime;
+}
+
+
+
+int main () {
+
+	ifstream inputFile;
+	ofstream outputFile;
+	
+	int draws[1500];				// stores the results of each draw for 2024
+	int numDraws;					// stores the number of draws in the draws array
+	
+	int frequency[36];				// stores the frequency of occurrence of each number
+	int freq, maxFreq, minFreq;
+	
+	int drawNum, i, winningNum;
+	string month;
+		
+	cout << "COMP 1601, Assignment 3: Analysis of 2024 PlayWhe Data" << endl;
+	
+	
+	// initialize frequency array: do not modify
+	
+	for (i=0; i<36; i=i+1)
+		frequency[i] = 0;
+
+	cout << endl;
+	cout << "Part (5):" << endl << endl;
+	
+	// open files: do not modify
+		
+	inputFile.open("PlayWhe.txt");
+	
+	if (!inputFile.is_open()) {
+		cout << "--> Input file could not be opened. Aborting ..." << endl;
+		exit (1);
+	}
+	
+	cout << endl;
+	cout << "--> About to read PlayWhe data ..." << endl;
+
+
+	// read data and populate draws and frequency arrays: do not modify
+	
+	i = 0;
+	
+	inputFile >> drawNum;
+		
+    while (drawNum != -1) {
+	    	
+    	inputFile >> month;
+    	inputFile >> winningNum;
+
+		// populate draws array
+		
+		draws[i] = winningNum;
+		i = i + 1;
+		
+		// update frequency array
+		
+		if (winningNum < 0)
+			winningNum = winningNum * -1;
+			
+		frequency[winningNum-1] = frequency[winningNum-1] + 1;
+		
+		inputFile >> drawNum;
+
+    }
+	
+    inputFile.close();
+		
+	numDraws = i;
+	
+	cout << numDraws << " PlayWhe drawings read from file." << endl;
+	cout << endl;
+
+
+	// process frequency array to find number/s drawn the most and the least
+
+	cout << endl;
+	cout << "Part (6):" << endl << endl;
+	
+	
+	int max=0;
+	int min=101;
+	int maxnumbers[36],minnumbers[36];
+	int maxcount=0, mincount=0;
+	
+
+	for(int i=0;i<36;i++){					//maximum frequencies
+		if(frequency[i]>max){
+			max=frequency[i];
+		}
+		if(frequency[i]>0 && frequency[i]<min){  //minimum frequencies
+			min=frequency[i];
+		}
+	}
+	
+	
+	for(int i=0;i<36;i++){
+		if(frequency[i]==max){
+			maxnumbers[maxcount++]=i+1;            //display max frequencies numbers
+		}
+	}
+	
+	for(int i=0;i<36;i++){
+		if(frequency[i]==min){
+			minnumbers[mincount++]=i+1;         //display min frequencies numbers
+		}
+	}
+	
+		
+	// display the number/s drawn the most and the least
+	
+	cout<<"The number/s that played the most ("<<max<<") times: "<<endl;
+	for(int i=0;i<maxcount;i++){
+		cout<<maxnumbers[i]<<"        ";
+
+	}
+   cout<<endl<<endl;
+
+	cout<<"The number/s that played the least ("<<min<<") times: "<<endl;
+		for(int i=0;i<mincount;i++){
+		cout<<minnumbers[i]<<"        ";
+	}
+	cout<<endl<<endl;
+	
+	
+	
+	
+	// produce histogram of frequency of appearance of each number
+
+	cout << endl;
+	cout << "Part (7):" << endl << endl;
+
+	cout<<"Frequency of occurrence of each number:"<<endl;
+	cout<<endl;
+	for(int i=0;i<36;i++){
+		cout<<setw(6)<<(i+1)<<":  | ";
+		drawStars(frequency[i]);
+		cout<<endl;
+	}
+
+	// check for frequency of occurrence of a number in a certain month
+
+	cout << endl;
+	cout << "Part (8):" << endl << endl;
+	
+	int monthcheck,number;
+	
+	cout<<"What month and number do you want to check frequency?";
+	cin>>monthcheck>>number;
+	
+	int start=getStartMonth(monthcheck); //get start index
+	int end;
+		
+	//get ending index	
+	
+	if (monthcheck==11){
+		end=numDraws-1;
+	}else{
+		end=getStartMonth(monthcheck+1)-1;
+	}
+	
+	int count=0;
+	int draw;
+	
+	for(int i=start;i<=end;i++){
+		draw=draws[i];     //covert to postive
+		
+		if(draw<0){
+		draw= draw* -1;
+	}
+		if(draw==number){
+			count=count+1;
+		}
+	}
+	
+	cout<<number<<" was drawn "<<count<<" times in "<<getMonthName(monthcheck)<<endl;
+	
+	
+  
+	// check for frequency of occurrence of a number in a certain month when Megaball was played
+	
+	cout << endl;
+	cout << "Part (9):" << endl << endl;
+	
+	int month_mb, number_mb;
+	int played=0;
+	int notplayed=0;
+	int value =0;
+		
+
+	
+	cout<<"What month and number do you want to check for Megaball? ";
+	cin>>month_mb>>number_mb;
+	
+	
+	//get ending index	
+	
+	if (monthcheck==11){
+		end=numDraws-1;
+	}else{
+		end=getStartMonth(month_mb+1)-1;
+	}
+	
+	for (int i=start;i<=end;i++){
+		draw=draws[i];
+	
+	if (draw<0){
+		value=draw;
+		if(value==-number_mb){
+				played=played+1;
+			}
+		}else{
+			if (draw==number_mb){
+				notplayed=notplayed+1;
+			}
+		}
+	}
+	
+	int total= played+ notplayed;
+	
+	cout<<number_mb<<" was drawn "<< total <<" times in "<<getMonthName(month_mb)<<endl;
+	cout<<"Megaball: "<<played<<endl;
+	cout<<"No Megaball: "<<notplayed<<endl;
+	
+	
+
+	// check for frequency of occurrence of Megaball for a certain number from all drawings
+
+	cout << endl;
+	cout << "Part (10):" << endl << endl;
+
+ 	int num_draw;
+	cout<<"What number do you want to check for Megaball from all drawings? ";
+	cin>>num_draw;
+	cout<<endl;
+	
+	int monthcount[11]={0};
+	int month_draw;
+	
+	for (int i = 1; i <= 11; i++) {
+        int start = getStartMonth(i);
+        int end;
+
+        // Get ending index
+        if (i==11) {
+            end = numDraws - 1; 
+        } else {
+            end = getStartMonth(i + 1) - 1; 
+        }
+	
+for(int j=start;j<=end;j++){
+	if(draws[j]==-num_draw){
+		monthcount[i-1]++;
+	}
+}
+}
+cout << "Month                   Number of Drawings" << endl;
+cout << "=====                   ==================" << endl;
+
+for(int i=0;i<11;i++){
+	cout<<setw(10)<<getMonthName(i+1)<<setw(15)<<monthcount[i]<<endl;
+}
+
+
+
+	// produce results for all four drawings in a given day of a certain month 
+
+	cout << endl;
+	cout << "Part (11):" << endl << endl; 
+	
+	int months_res,day;
+	
+	cout<<"What month and day of draw do you want results for?  ";
+	cin>>months_res>>day;
+	
+	start=getStartMonth(months_res);
+	
+	//cal the index of the day
+	int daynum=start+(day-1)*4;	     //group by 4
+	
+	if (months_res==11) {
+            end = numDraws - 1; 
+        } else {
+            end = getStartMonth(months_res + 1) - 1; 
+        }
+	
+	if(daynum<=end ){
+		cout<< "Drawings for Day " <<day<<" in "<<getMonthName(months_res)<<" : "<<endl<<endl;
+		
+	
+	int index;
+	 
+	string drawTime;
+	for(int i=0;i<4;i++){
+		index=daynum+i;
+		drawTime =getDrawTime(i+1);
+		cout<<drawTime<<" - "<<draws[index];
+	
+		if(i==0||i==3){
+			cout<<"(Megaball)";
+		}
+		cout<<endl;
+}
+}
+   
+	// calculate winnings based on bet for PlayWhe and for Megaball (if played)
+	
+	cout << endl;
+	cout << "Part (12):" << endl << endl;
+	
+	double bet_playWhe,bet_Megaball;
+	
+	cout<<"Calculating winnings if number is played ... "<<endl;
+	cout<<endl;
+	
+	cout<<"What is the bet on PlayWhe? ";
+	cin>>bet_playWhe;
+	cout<<"What is the bet on the Megaball? ";
+	cin>>bet_Megaball;
+	cout<<endl<<endl;
+	
+	
+	int playWhe_win=0;
+	int megaball_win=0;
+	
+	int playnum=draws[0];
+	
+	bool playwhe=false;
+	bool megaball=false;
+	
+	for(int i =0;i<numDraws;i++){
+		if(draws[i]==playnum){
+			playwhe=true;
+		}
+		if (draws[i]==-playnum){
+			megaball=true;
+		}
+	}
+	
+	if (playwhe){
+		playWhe_win=bet_playWhe *26;
+	}
+	
+	if(megaball){
+		megaball_win=bet_Megaball *90;
+	}
+	int winningtotal= playWhe_win +megaball_win;
+	
+	cout<<"Play Whe winnings: "<<playWhe_win<<endl;
+	cout<<"Megaball winnings: "<<megaball_win<<endl;
+	cout<<"Total winnings if Megaball is played:"<<winningtotal<<endl;
+	
+	
+	
+	cout << endl;
+	cout << "--> End of Program" << endl;
+
+    return 0;
+}
